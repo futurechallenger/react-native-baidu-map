@@ -26,13 +26,18 @@ export default class App extends Component {
       baiduHeatMapEnabled: false,
       markers: [
         {
-          longitude: 113.981718,
-          latitude: 22.542449,
+          longitude: 104.08396,
+          latitude: 38.542449,
           title: "Window of the world"
         },
         {
-          longitude: 113.995516,
-          latitude: 22.537642,
+          longitude: 104.08206,
+          latitude: 38.537642,
+          title: ""
+        },
+        {
+          longitude: 104.08496,
+          latitude: 38.65777,
           title: ""
         }
       ]
@@ -47,6 +52,19 @@ export default class App extends Component {
     await MapView.locateUser();
   };
 
+  planRoute = async () => {
+    await MapView.planRoute(
+      {
+        longitude: 116.333134,
+        latitude: 40.009545
+      },
+      {
+        longitude: 116.3597960000,
+        latitude: 39.9988780000
+      }
+    );
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -56,11 +74,21 @@ export default class App extends Component {
           zoom={this.state.zoom}
           mapType={this.state.mapType}
           center={this.state.center}
+          markers={this.state.markers}
           allGesturesEnabled={true}
           draggable={true}
           style={styles.map}
           onMarkerClick={e => {
-            console.warn(JSON.stringify(e));
+            console.log(JSON.stringify(e));
+          }}
+          onReceiveLocation={e => {
+            const { longitude, latitude } = e;
+            this.setState({
+              center: {
+                longitude: longitude,
+                latitude: latitude
+              }
+            });
           }}
           onMapClick={e => {}}
         />
@@ -130,6 +158,12 @@ export default class App extends Component {
                   zoom: this.state.zoom - 1
                 });
               }
+            }}
+          />
+          <Button
+            title="Route"
+            onPress={() => {
+              this.planRoute();
             }}
           />
         </View>
